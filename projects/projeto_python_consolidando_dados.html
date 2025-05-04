@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Consolidando Dados - Gabriel Rocha</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Seus estilos -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/vendor.css">
+  <link rel="stylesheet" href="../css/main.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+
+  <style>
+    body {
+      background: #111;
+    }
+
+    .project-page {
+      max-width: 1000px;
+      margin: 10rem auto;
+      padding: 0 2rem;
+      color: #fff;
+    }
+
+    .project-page h1 {
+      font-size: 3.2rem;
+      color: #39b54a;
+      margin-bottom: 2rem;
+    }
+
+    .project-page p {
+      font-size: 1.8rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    /* Estilo do "terminal" */
+    .terminal {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      padding: 2rem;
+    }
+
+    .terminal::before {
+      content: "python";
+      display: block;
+      color: #39b54a;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+
+    .terminal code {
+      font-size: 1.6rem;
+      font-family: 'Fira Code', monospace;
+      line-height: 1.8;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 3rem;
+      font-size: 1.6rem;
+      color: #39b54a;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border 0.3s;
+    }
+
+    .back-button:hover {
+      border-bottom: 1px solid #39b54a;
+    }
+
+    .comment-section {
+      margin-top: 3rem;
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 2rem;
+      border-left: 3px solid #39b54a;
+      border-radius: 6px;
+    }
+
+    .comment-section h3 {
+      color: #39b54a;
+      margin-bottom: 1rem;
+    }
+
+    .comment-section p {
+      color: #ccc;
+      font-size: 1.6rem;
+      line-height: 1.6;
+    }
+
+    .toggle-button {
+      background-color: #1e1e1e;
+      color: #39b54a;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-size: 1.4rem;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+    }
+
+    .toggle-button:hover {
+      background-color: #292929;
+    }
+
+    .toggle-button:active {
+      background-color: #1e1e1e; /* mantém cor original mesmo ao clicar */
+    }
+
+
+  </style>
+</head>
+<body>
+
+  <div class="project-page">
+    <h1>Análise Python - Consolidando Dados</h1>
+    <p>
+      Em meio a dezenas de planilhas com dados de vendas espalhados, surgiu a necessidade de consolidar tudo em uma única base limpa,
+      padronizada e pronta para análise — mesmo com as informações úteis limitadas a algumas abas.<br>
+      Este script em Python automatiza todo o processo: abre, extrai, padroniza e empilha os dados,
+      economizando tempo e garantindo consistência para análises futuras.
+    </p>
+      
+    
+
+    <div class="terminal" id="codigo-terminal" style="max-height: 300px; overflow-y: auto; transition: max-height 0.3s ease;">
+      <pre><code class="language-python">
+    import pandas as pd
+    from pyxlsb import open_workbook
+    import re
+
+    # Lista de arquivos .xlsb que serão processados
+    arquivos = [
+        r"C:\Caminho\Para\Arquivo\Memoria - W01.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W02.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W03.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W04.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W05.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W06.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W07.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W08.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W09.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W10.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W11.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W12.xlsb",
+        r"C:\Caminho\Para\Arquivo\Memoria - W13.xlsb"
+    ]
+
+    # Expressão regular para extrair a semana do nome do arquivo
+    id_semana = r"- W.{2}"
+
+    # Abas do arquivo a serem processadas
+    abas = ["BASE_A", "BASE_B", "BASE_C"]
+
+    # DataFrame final onde os dados serão acumulados
+    df_final = pd.DataFrame()
+
+    # Controle do índice das linhas no DataFrame final
+    ultimo_indice = 0
+
+    # Processando cada arquivo na lista
+    for arquivo in arquivos:
+        # Extrai a semana do nome do arquivo usando a expressão regular
+        id_w_result = re.search(id_semana, arquivo)
+        semana = id_w_result.group(0) if id_w_result else "N/A"
+        
+        # Abre o arquivo .xlsb e processa cada aba
+        with open_workbook(arquivo) as arq:
+            for aba in abas:
+                if aba in arq.sheets:  # Verifica se a aba existe no arquivo
+                    id_aba = arq.get_sheet(aba)  # Acessa a aba
+                    linhas = list(id_aba.rows())  # Lê todas as linhas da aba
+                    cabecalho = [cell[2] for cell in linhas[0]]
+                    dados = [[cell[2] for cell in row] for row in linhas[1:]]
+                    
+                    # Cria um DataFrame com os dados lidos
+                    df_aba = pd.DataFrame(dados, columns=cabecalho)
+                    
+                    # Manipula os dados dependendo da aba
+                    # (muda os nomes das colunas e adiciona a coluna 'base')
+                    if aba.lower() == 'base_a':
+                        df_aba = df_aba[['LOJA', 'CODIGO', 'VALOR']]
+                        df_aba.columns = ['cnpj', 'ean', 'check']
+                        df_aba['base'] = 'base_a'
+                    elif aba.lower() == 'base_b':
+                        df_aba = df_aba[['LOJA', 'EAN', 'VENDA']]
+                        df_aba.columns = ['cnpj', 'ean', 'check']
+                        df_aba['base'] = 'base_b'
+                    elif aba.lower() == 'base_c':
+                        df_aba = df_aba[['LOJA', 'CODIGO_BARRAS', 'VLR']]
+                        df_aba.columns = ['cnpj', 'ean', 'check']
+                        df_aba['base'] = 'base_c'
+
+                    # Adiciona a coluna da semana e formata os valores de 'cnpj' e 'ean'
+                    df_aba['semana'] = semana
+                    # Preenche o CNPJ com zeros à esquerda
+                    df_aba['cnpj'] = df_aba['cnpj'].astype(str).str.zfill(14)
+                    # Preenche o EAN com zeros à esquerda
+                    df_aba['ean'] = df_aba['ean'].astype(str).str.zfill(13)
+                    
+                    # Atualiza o índice do DataFrame
+                    df_aba.index = range(ultimo_indice, ultimo_indice + len(df_aba))
+                    ultimo_indice = df_aba.index[-1] + 1  # Ajusta o último índice
+
+                    # Concatena os dados dessa aba ao DataFrame final
+                    df_final = pd.concat([df_final, df_aba], ignore_index=True)
+
+    # Filtra o DataFrame final para manter apenas as linhas com 'check' > 0
+    df_final = df_final[df_final['check'] > 0]
+
+    # Salva o DataFrame final como um arquivo CSV
+    df_final.to_csv(r"C:\Caminho\Para\Salvar\resultado.csv", index=False)
+
+    # Exibe uma mensagem indicando que o arquivo foi gerado com sucesso
+    print('Arquivo gerado com sucesso!')
+      </code></pre>
+    </div>
+
+    <div style="text-align: right; margin-top: -1.5rem; margin-bottom: 2rem;">
+      <button id="toggle-code" class="toggle-button">🔽 Expandir</button>
+    </div>    
+
+    <div class="comment-section">
+      <h3>Qual era o desafio?</h3>
+      <p>
+        Houve uma mudança no modelo de negócio a partir da semana 10 (início de março), o que gerou insatisfação entre os times de vendas.
+        Alguns alegaram estar sendo prejudicados, apontando que seus resultados caíram de forma significativa, afetando diretamente seus ganhos.
+      </p>
+      <p>
+        Para entender o impacto real dessa mudança, a ideia era comparar o desempenho médio de janeiro e fevereiro com o de março.
+        Porém, parte dos dados estava distribuídos em 13 arquivos semanais enormes, com várias abas, tabelas e fórmulas.
+        Fazer isso manualmente significaria abrir arquivo por arquivo, aba por aba, copiar e colar as informações em uma planilha final
+         — um processo extremamente demorado, cansativo e sujeito a erros humanos.
+      </p>    
+      <p>
+        Foi nesse contexto que criei este script em Python: uma solução automatizada para transformar um processo maçante em algo ágil, preciso e confiável.
+      </p>
+  
+      <h3>O que esse código faz?</h3>
+      <p>Este script automatiza toda a leitura, extração e consolidação de dados contidos em arquivos do Excel, semana a semana.</p>
+      <p>
+        ✔️ Primeiro, ele percorre uma lista de arquivos semanais e identifica a qual semana cada arquivo pertence,
+        utilizando uma expressão regular que lê o código da semana no nome do arquivo (como "- W01").<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; 🔹 Como os arquivos não traziam uma informação explícita sobre a semana, aproveitei o próprio nome do arquivo
+         — que já seguia esse padrão — para identificar cada período.
+      </p>
+      <p>
+        ✔️ Em seguida, abre cada arquivo e procura por três abas específicas:
+        <strong>BASE_A</strong>, <strong>BASE_B</strong> e <strong>BASE_C</strong><br>
+        Cada uma representando uma fonte diferente de dados necessários.
+      </p>
+      <p>
+        ✔️ Dentro de cada aba, o código captura os dados, padroniza os nomes das colunas para <strong>cnpj</strong> (loja),
+        <strong>ean</strong> (produto) e <strong>check</strong> (valor de venda), e registra também a origem da base e a semana correspondente.
+      </p>    
+      <p>
+        ✔️ O script garante que os campos de CNPJ e EAN estejam no formato correto (com 14 e 13 dígitos, respectivamente),
+        normalizando os dados para evitar inconsistências futuras.
+      </p>
+      <p>
+        ✔️ Todos os registros extraídos são empilhados em um único DataFrame, criando uma base consolidada com dados de todas as semanas e todas as fontes.
+      </p>
+      <p>
+        ✔️ Por fim, ele filtra apenas os registros com vendas reais (check > 0) e exporta os resultados para um arquivo CSV pronto para ser analisado.
+      </p>
+      <h3>Conclusão</h3>
+      <p>
+        O script automatiza uma tarefa bastante onerosa e repetitiva, transformando um processo que levaria horas em algo resolvido em poucos segundos, com confiabilidade e padronização. <br>
+        Além disso, ela possibilitou uma análise mais rápida e precisa, e ainda criou um caminho para reaproveitar a solução em futuras demandas. <br>
+        </p>
+    </div>
+    
+    
+
+    <a href="../index.html#portfolio" class="back-button">← Voltar ao Portfólio</a>
+
+    <div style="height: 10rem;"></div>
+    
+  </div>
+
+  <!-- Prism.js scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+
+  <script>
+    const botao = document.getElementById("toggle-code");
+    const terminal = document.getElementById("codigo-terminal");
+    let expandido = false;
+  
+    botao.addEventListener("click", () => {
+      expandido = !expandido;
+  
+      if (expandido) {
+        terminal.style.maxHeight = "1000px"; // ou 'none'
+        botao.textContent = "🔼 Recolher";
+      } else {
+        terminal.style.maxHeight = "300px";
+        botao.textContent = "🔽 Expandir";
+      }
+    });
+  </script>
+  
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Indicadores - Gabriel Rocha</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/vendor.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+
+  <style>
+    body {
+      background: #111;
+    }
+
+    .project-page {
+      max-width: 1000px;
+      margin: 10rem auto;
+      padding: 0 2rem;
+      color: #fff;
+    }
+
+    .project-page h1 {
+      font-size: 3.2rem;
+      color: #39b54a;
+      margin-bottom: 2rem;
+    }
+
+    .project-page p {
+      font-size: 1.8rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .terminal {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      padding: 2rem;
+    }
+
+    .terminal::before {
+      content: "powerbi";
+      display: block;
+      color: #39b54a;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+
+    .powerbi-embed {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .comment-section {
+      margin-top: 3rem;
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 2rem;
+      border-left: 3px solid #39b54a;
+      border-radius: 6px;
+    }
+
+    .comment-section h3 {
+      color: #39b54a;
+      margin-bottom: 1rem;
+    }
+
+    .comment-section p, .comment-section ul {
+      color: #ccc;
+      font-size: 1.6rem;
+      line-height: 1.6;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 3rem;
+      font-size: 1.6rem;
+      color: #39b54a;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border 0.3s;
+    }
+
+    .back-button:hover {
+      border-bottom: 1px solid #39b54a;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="project-page">
+  <h1>Painel de Indicadores</h1>
+
+  <p>
+    Mais do que metas e resultados: este dashboard revela onde está a força (ou fraqueza) da execução comercial.<br>
+    De forma visual e orientada por dados, ele permite enxergar a performance sob três ângulos essenciais
+     — Sell In, Sell Out e Positivação — filtrando, comparando e destacando o que realmente precisa de atenção.
+  </p>
+
+  <div class="terminal">
+    <iframe 
+      class="powerbi-embed"
+      title="Painel de Indicadores"
+      src="https://app.powerbi.com/view?r=eyJrIjoiODdhNTIxMmUtM2JhMC00YmUwLWEwYTktMDU5OWNiNjAxOTEyIiwidCI6IjVhMTk4N2VhLTQxY2EtNGZmNi05OGEzLTA4ZWVkMmZiZTk1YSJ9"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <div class="comment-section">
+    <h3>Qual era o desafio?</h3>
+    <p>
+      Com diversos distribuidores atuando em regiões distintas e metas agressivas definidas mensalmente, era difícil acompanhar o progresso e identificar gargalos de forma unificada.<br>
+      O desafio era construir uma solução visual e interativa que permitisse comparar metas com realizações em tempo real, além de revelar pontos de atenção de forma intuitiva.
+    </p>
+    
+    <h3>O que esse painel faz?</h3>
+    <p>
+      O painel centraliza os dados de Sell In, Sell Out e Positivação, com filtros dinâmicos por período, região e ponto de venda. Além disso, apresenta uma Nota Geral ponderada, baseada nos pesos atribuídos a cada indicador.
+    </p>
+
+    <div style="margin-left: 20px;">
+
+      <p style="margin-bottom: 0;">🔹 <strong>Nota Geral & Cards por Indicador</strong></p>
+      <p style="margin-top: 5px;">
+        O painel apresenta uma Nota Geral consolidada, calculada a partir do desempenho ponderado dos três principais KPIs: Sell In (40%), Sell Out (35%) e Positivação (25%).<br>
+        Essa abordagem entrega, de forma direta, uma leitura clara do cenário atual de performance, complementada pelos cards que destacam metas, resultados e variações.
+      </p>
+    
+      <p style="margin-bottom: 0;">🔹 <strong>Mapa Interativo</strong></p>
+      <p style="margin-top: 5px;">
+        A visualização geográfica permite identificar rapidamente as regiões com melhor ou pior desempenho, promovendo uma análise territorial eficaz e apoiando decisões regionais mais estratégicas.
+      </p>
+    
+      <p style="margin-bottom: 0;">🔹 <strong>Análise por Distribuidor</strong></p>
+      <p style="margin-top: 5px;">
+        Através de um ranking detalhado por PDV, esta visualização avalia o desempenho da Nota Geral de forma comparativa e temporal. Os resultados são segmentados por trimestre, permitindo acompanhar a consistência de cada distribuidor ao longo do ano.<br>
+      </p>      
+    
+      <p style="margin-bottom: 0;">🔹 <strong>Histórico de Performance</strong></p>
+      <p style="margin-top: 5px;">
+        A linha do tempo da Nota Geral evidencia variações de desempenho entre os meses, facilitando a visualização de picos e quedas ao longo do período analisado.<br>
+      </p>
+    
+      <p style="margin-bottom: 0;">🔹 <strong>Sell In | Sell Out | Positivação</strong></p>
+      <p style="margin-top: 5px;">
+        Gráficos comparativos mostram a evolução entre metas e resultados mês a mês, tanto em nível consolidado quanto por PDV.
+        Também exibem a trajetória das unidades de Sell In e Sell Out, permitindo avaliar com clareza a efetividade de cada indicador ao longo do tempo.
+      </p>
+    </div>    
+
+    <h3>Conclusão</h3>
+    <p>
+      Com uma experiência visual intuitiva, o Painel de Indicadores elimina a complexidade na análise de resultados, conectando metas, execução e oportunidades em um único ambiente.<br>
+      Ele empodera a gestão com dados consolidados e de fácil leitura, acelerando a tomada de decisão e promovendo ações mais estratégicas e assertivas.
+    </p>
+  </div>
+
+  <a href="../index.html#portfolio" class="back-button">← Voltar ao Portfólio</a>
+
+  <div style="height: 10rem;"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+
+</body>
+</html>

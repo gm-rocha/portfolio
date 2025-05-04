@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Análise de Vendas - Gabriel Rocha</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/vendor.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+
+  <style>
+    body {
+      background: #111;
+    }
+
+    .project-page {
+      max-width: 1000px;
+      margin: 10rem auto;
+      padding: 0 2rem;
+      color: #fff;
+    }
+
+    .project-page h1 {
+      font-size: 3.2rem;
+      color: #39b54a;
+      margin-bottom: 2rem;
+    }
+
+    .project-page p {
+      font-size: 1.8rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .terminal {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      padding: 2rem;
+    }
+
+    .terminal::before {
+      content: "powerbi";
+      display: block;
+      color: #39b54a;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+
+    .powerbi-embed {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .comment-section {
+      margin-top: 3rem;
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 2rem;
+      border-left: 3px solid #39b54a;
+      border-radius: 6px;
+    }
+
+    .comment-section h3 {
+      color: #39b54a;
+      margin-bottom: 1rem;
+    }
+
+    .comment-section p, .comment-section ul {
+      color: #ccc;
+      font-size: 1.6rem;
+      line-height: 1.6;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 3rem;
+      font-size: 1.6rem;
+      color: #39b54a;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border 0.3s;
+    }
+
+    .back-button:hover {
+      border-bottom: 1px solid #39b54a;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="project-page">
+  <h1>Análise de Vendas</h1>
+
+  <p>
+    Dashboard criado para transformar dados dispersos em respostas rápidas sobre o desempenho comercial.<br>
+    Em uma única página, ele consolida vendas por loja, produto e período — permitindo entender o que mais vende, onde, quando e por quê.  
+    Visual claro, permitindo uma leitura rápida para guiar decisões comerciais com mais precisão.
+  </p>
+
+  <div class="terminal">
+    <iframe 
+      class="powerbi-embed"
+      title="Análise de Vendas"
+      src="https://app.powerbi.com/view?r=eyJrIjoiYTE3NDllNmYtZThhNi00N2U2LThlODAtNzcxZGZiNGExYTFjIiwidCI6IjVhMTk4N2VhLTQxY2EtNGZmNi05OGEzLTA4ZWVkMmZiZTk1YSJ9"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <div class="comment-section">
+    <h3>Qual era o desafio?</h3>
+    <p>
+      Acompanhar o desempenho comercial de forma precisa nem sempre é simples.  
+      Com uma grande variedade de produtos, canais de venda e variações de mercado ao longo do tempo, surgia a dificuldade de responder perguntas essenciais como: o que mais vende? Onde? Quando? E por quê?<br>
+      O desafio era construir uma visualização centralizada, intuitiva e comparativa — capaz de transformar os dados brutos de vendas em respostas rápidas e acionáveis.
+    </p>
+  
+    <h3>O que essa análise entrega?</h3>
+    <p>
+      Este painel foi projetado para oferecer uma leitura completa da performance de vendas.  
+      De forma interativa e visualmente clara, ele permite analisar o comportamento de compra ao longo do tempo, identificar os produtos mais vendidos, avaliar o desempenho por loja e entender a distribuição de receita por categoria.
+    </p>
+  
+    <div style="margin-left: 20px;">
+  
+      <p style="margin-bottom: 0;">🔹 <strong>Resumo de Vendas</strong></p>
+      <p style="margin-top: 5px;">
+        Logo no topo, o painel apresenta os principais volumes movimentados: total em receita, quantidade de unidades vendidas e ticket médio.  
+        Esses números oferecem uma visão imediata da escala de vendas e da média de valor por transação.
+      </p>
+  
+      <p style="margin-bottom: 0;">🔹 <strong>Evolução Temporal</strong></p>
+      <p style="margin-top: 5px;">
+        O gráfico de linha exibe o comportamento de vendas ao longo dos meses, revelando tendências, picos sazonais e variações relevantes.  
+        Uma ferramenta ideal para análises de crescimento, planejamento de estoque e avaliação de campanhas comerciais.
+      </p>
+  
+      <p style="margin-bottom: 0;">🔹 <strong>Desempenho por Loja</strong></p>
+      <p style="margin-top: 5px;">
+        Esta visualização compara diretamente o faturamento entre lojas ou canais de venda.  
+        Ajuda a entender quais unidades mais contribuem para o total e quais podem demandar ações específicas de reforço comercial ou ajuste de mix.
+      </p>
+  
+      <p style="margin-bottom: 0;">🔹 <strong>Vendas por Produto</strong></p>
+      <p style="margin-top: 5px;">
+        O ranking por produto mostra de forma clara quais itens têm maior impacto no faturamento.  
+        É uma base poderosa para decisões de portfólio, como reforço de produção, estratégias de precificação ou descontinuação de itens com baixa saída.
+      </p>
+  
+      <p style="margin-bottom: 0;">🔹 <strong>Participação por Categoria</strong></p>
+      <p style="margin-top: 5px;">
+        O gráfico em rosca exibe a participação percentual das diferentes categorias de produto.  
+        Ele permite uma leitura rápida sobre quais segmentos lideram as vendas e quais estão com peso abaixo do esperado, ajudando no planejamento de mix e campanhas por linha.
+      </p>
+  
+      <p style="margin-bottom: 0;">🔹 <strong>Visual Adaptável</strong></p>
+      <p style="margin-top: 5px;">
+        Com versões em modo claro e escuro, o painel se adapta ao ambiente e preferência do usuário — sem comprometer a legibilidade ou o impacto visual.  
+        Ideal para reuniões, apresentações ou consultas do dia a dia.
+      </p>
+    </div>
+  
+    <h3>Conclusão</h3>
+    <p>
+      Esse dashboard oferece uma visão prática, direta e estratégica sobre o que realmente importa: o que vende, quanto vende e onde melhorar.<br>
+      É uma ferramenta de apoio à decisão comercial construída para transformar observações em ação.
+    </p>
+  </div>    
+
+  <a href="../index.html#portfolio" class="back-button">← Voltar ao Portfólio</a>
+
+  <div style="height: 10rem;"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+
+</body>
+</html>

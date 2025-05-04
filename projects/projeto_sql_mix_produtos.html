@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Projeto SQL - Gabriel Rocha</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Seus estilos -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/vendor.css">
+  <link rel="stylesheet" href="../css/main.css">
+
+  <!-- Prism.js para sintaxe destacada -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+
+  <style>
+    body {
+      background: #111;
+    }
+
+    .project-page {
+      max-width: 1000px;
+      margin: 10rem auto;
+      padding: 0 2rem;
+      color: #fff;
+    }
+
+    .project-page h1 {
+      font-size: 3.2rem;
+      color: #39b54a;
+      margin-bottom: 2rem;
+    }
+
+    .project-page p {
+      font-size: 1.8rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    /* Estilo do "terminal" */
+    .terminal {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      padding: 2rem;
+    }
+
+    .terminal::before {
+      content: "sql";
+      display: block;
+      color: #39b54a;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+
+    .terminal code {
+      font-size: 1.6rem;
+      font-family: 'Fira Code', monospace;
+      line-height: 1.8;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 3rem;
+      font-size: 1.6rem;
+      color: #39b54a;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border 0.3s;
+    }
+
+    .back-button:hover {
+      border-bottom: 1px solid #39b54a;
+    }
+
+    .comment-section {
+      margin-top: 3rem;
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 2rem;
+      border-left: 3px solid #39b54a;
+      border-radius: 6px;
+    }
+
+    .comment-section h3 {
+      color: #39b54a;
+      margin-bottom: 1rem;
+    }
+
+    .comment-section p {
+      color: #ccc;
+      font-size: 1.6rem;
+      line-height: 1.6;
+    }
+
+    .toggle-button {
+      background-color: #1e1e1e;
+      color: #39b54a;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-size: 1.4rem;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+    }
+
+    .toggle-button:hover {
+      background-color: #292929;
+    }
+
+    .toggle-button:active {
+      background-color: #1e1e1e; /* mantém cor original mesmo ao clicar */
+    }
+
+    .terminal pre {
+      white-space: pre;
+      overflow-x: auto;
+      word-wrap: normal;
+      max-width: 100%;
+    }
+
+    .terminal code {
+      display: block;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .terminal {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    
+
+
+
+  </style>
+</head>
+<body>
+
+  <div class="project-page">
+    <h1>Procedure SQL - Cálculo de Mix de Produtos</h1>
+
+    <p>
+      Com dezenas de SKUs por loja e múltiplas fontes de coleta, definir o mix correto de produtos era uma tarefa demorada, suscetível a erros e difícil de escalar.
+      Este script SQL veio para resolver isso: consolida tudo em uma única base integrada, identifica a fonte por SKU,
+      classifica o status de disponibilidade e entrega um mix limpo, padronizado e pronto para análise.
+    </p>     
+    
+
+    <div class="terminal" id="codigo-terminal" style="max-height: 300px; overflow-y: auto; transition: max-height 0.3s ease;">
+        <pre><code class="language-sql">
+      ALTER PROCEDURE [dbo].[sp_mix_esperado]
+      AS
+      BEGIN
+          SET NOCOUNT ON;
+
+          ---------- CRIAÇÃO DAS TABELAS TEMPORÁRIAS
+          -- Cria tabelas temporárias para armazenar dados
+          CREATE TABLE #periodo (
+              data DATE NULL
+          );
+
+          CREATE TABLE #coleta_manual (
+              conca NVARCHAR(100) NULL
+          );
+
+          CREATE TABLE #base_externa_1 (
+              conca NVARCHAR(100) NULL
+          );
+
+          CREATE TABLE #base_externa_2 (
+              conca NVARCHAR(100) NULL
+          );
+
+          CREATE TABLE #base_externa_3 (
+              conca NVARCHAR(100) NULL,
+              valor INT NULL
+          );
+
+          CREATE TABLE #sortimento (
+              ean NVARCHAR(25) NULL,
+              marca NVARCHAR(50) NULL
+          );
+
+          CREATE TABLE #base_roteiro (
+              cod_pdv INT NULL,
+              fonte NVARCHAR(100) NULL
+          );
+
+          CREATE TABLE #base_regra_bandeira (
+              bandeira NVARCHAR(100) NULL
+          );
+
+          CREATE TABLE #base_mix (
+              ano INT,
+              semana INT,
+              nome_pdv NVARCHAR(100),
+              tipo_pdv NVARCHAR(50),
+              cod_barras NVARCHAR(20),
+              cod_regra_x NVARCHAR(20),
+              cod_regra_ou NVARCHAR(20),
+              produto_novo NVARCHAR(10),
+              quantidade_sku INT,
+              sku NVARCHAR(50),
+              cnpj NVARCHAR(20),
+              data_pesquisa DATE,
+              conca NVARCHAR(100),
+              aparece_base_externa_1 NVARCHAR(5),
+              aparece_base_externa_2 NVARCHAR(5),
+              aparece_base_externa_3 NVARCHAR(5),
+              aparece_manual NVARCHAR(5),
+              base_externa_1 INT,
+              base_externa_2 INT,
+              base_externa_3 INT,
+              coleta_manual INT,
+              disponibilidade NVARCHAR(50),
+              fonte NVARCHAR(50),
+              regra_bandeira NVARCHAR(50),
+              regra_sku NVARCHAR(2),
+              tipo_mix NVARCHAR(50),
+              marca NVARCHAR(50),
+              tipo_roteiro NVARCHAR(20),
+              bandeira_pdv NVARCHAR(50)
+          );
+
+
+          ---------- PREENCHIMENTO DAS TABELAS
+
+          INSERT INTO #periodo
+          SELECT CAST(DATEADD(DAY, v.n,
+                    CAST(DATEADD(DAY, -7 + (2 - DATEPART(WEEKDAY, GETDATE())), GETDATE()) AS DATE)
+                ) AS DATE)
+          FROM (VALUES (0), (1), (2), (3), (4), (5)) v(n);
+
+
+          INSERT INTO #coleta_manual
+          SELECT DISTINCT
+              CONCAT(FORMAT(CAST(dp.cnpj AS BIGINT), '00000000000000'),
+                    DATEPART(WEEK, DATEADD(WEEK, -1, GETDATE())),
+                    FORMAT(CAST(dp2.codigo_barras AS BIGINT), '0000000000000')) AS conca
+          FROM f_coleta fc
+          LEFT JOIN dim_pdv dp ON dp.id_dim_pdv = fc.id_dim_pdv
+          LEFT JOIN dim_linha_produto dp2 ON dp2.id_dim_linha_produto = fc.id_dim_linha_produto
+          LEFT JOIN #periodo p ON CAST(p.data AS DATE) = CAST(fc.data AS DATE)
+          WHERE fc.resposta LIKE 'OK%'
+            AND fc.id_dim_formulario IN (
+                SELECT df.id_dim_formulario
+                FROM dim_formulario df
+                WHERE id_ambiente = 30
+                  AND formulario IN ('Formulário A', 'Formulário B')
+            )
+            AND p.data IS NOT NULL;
+
+
+          INSERT INTO #base_externa_1
+          SELECT DISTINCT
+              CONCAT(FORMAT(CAST(bs.store_cnpj AS BIGINT), '00000000000000'),
+                    DATEPART(WEEK, DATEADD(WEEK, -1, GETDATE())),
+                    FORMAT(CAST(bs.product_ean_barcode AS BIGINT), '0000000000000')) AS conca
+          FROM base_base_externa_1 bs
+          LEFT JOIN #periodo p ON CAST(p.data AS DATE) = CAST(bs.date AS DATE)
+          WHERE p.data IS NOT NULL;
+
+
+          INSERT INTO #base_externa_2
+          SELECT DISTINCT
+              CONCAT(FORMAT(CAST(bn.cnpj AS BIGINT), '00000000000000'),
+                    DATEPART(WEEK, DATEADD(WEEK, -1, GETDATE())),
+                    FORMAT(CAST(bn.ean AS BIGINT), '0000000000000')) AS conca
+          FROM base_base_externa_2 bn
+          LEFT JOIN #periodo p ON CAST(p.data AS DATE) = CAST(bn.data AS DATE)
+          WHERE bn.valor > 0 AND p.data IS NOT NULL;
+
+
+          INSERT INTO #base_externa_3
+          SELECT DISTINCT
+              CONCAT(FORMAT(CAST(bs.cnpj AS BIGINT), '00000000000000'),
+                    DATEPART(WEEK, DATEADD(WEEK, -1, GETDATE())),
+                    FORMAT(CAST(bs.cod_barras AS BIGINT), '0000000000000')) AS conca,
+              bs.valor
+          FROM base_base_externa_3 bs
+          LEFT JOIN #periodo p ON CAST(p.data AS DATE) = CAST(bs.data AS DATE)
+          WHERE p.data IS NOT NULL;
+
+
+          INSERT INTO #sortimento
+          SELECT
+              bs.cod_barras,
+              bs.marca
+          FROM base_sortimento bs
+          LEFT JOIN #periodo p ON CAST(p.data AS DATE) = CAST(bs.data AS DATE)
+          WHERE p.data IS NOT NULL;
+
+
+          INSERT INTO #base_regra_bandeira
+          SELECT DISTINCT brb.bandeira
+          FROM base_regra_bandeira brb
+          LEFT JOIN #periodo p ON CAST(p.data AS DATE) = CAST(brb.data AS DATE)
+          WHERE p.data IS NOT NULL;
+
+
+          INSERT INTO #base_roteiro
+          SELECT br.cod_pdv, br.fonte
+          FROM base_roteiro br
+          LEFT JOIN #periodo p ON CAST(p.data AS DATE) = CAST(br.data AS DATE)
+          WHERE p.data IS NOT NULL;
+
+
+          INSERT INTO #base_mix
+          SELECT
+              YEAR(GETDATE()) AS ano,
+              DATEPART(WEEK, DATEADD(WEEK, -1, GETDATE())) AS semana,
+              dp.nome_pdv,
+              dp.tipo_pdv,
+              bs.cod_barras,
+              bs.cod_regra_x,
+              bs.cod_regra_ou,
+              bs.produto_novo,
+              bs.quantidade_sku,
+              bs.sku,
+              dp.cnpj,
+              CAST(DATEADD(DAY, -7 + (2 - DATEPART(WEEKDAY, GETDATE())), GETDATE()) AS DATE),
+              CONCAT(FORMAT(CAST(dp.cnpj AS BIGINT), '00000000000000'),
+                    DATEPART(WEEK, DATEADD(WEEK, -1, GETDATE())),
+                    FORMAT(CAST(bs.cod_barras AS BIGINT), '0000000000000')),
+              NULL, NULL, NULL, NULL,
+              NULL, NULL, NULL, NULL,
+              NULL, NULL, NULL, NULL,
+              bs.tipo_sortimento,
+              bs.marca,
+              br.fonte,
+              dp.bandeira
+          FROM base_roteiro br
+          LEFT JOIN dim_pdv dp ON CAST(dp.codigo_pdv AS INT) = br.cod_pdv
+          LEFT JOIN base_sortimento bs ON bs.para = dp.tipo_pdv
+          WHERE RIGHT(dp.id_ambiente, 2) = '30'
+            AND bs.status_bi = 'SIM'
+            AND br.cod_pdv IS NOT NULL;
+
+
+          ---------- ATUALIZAÇÃO DAS REGRAS
+          -- Atualiza as colunas de 'aparece_base_externa_X' para marcar a presença de dados
+          UPDATE bm
+          SET bm.aparece_base_externa_1 =
+          CASE WHEN
+            r.conca IS NOT NULL AND bm.tipo_roteiro = 'EXTERNA'
+            THEN 'X' ELSE '-' END
+          FROM #base_mix bm
+          LEFT JOIN #base_externa_1 r ON bm.conca = r.conca;
+
+          UPDATE bm
+          SET bm.aparece_base_externa_2 =
+          CASE WHEN
+            r.conca IS NOT NULL AND bm.tipo_roteiro = 'EXTERNA'
+            THEN 'X' ELSE '-' END
+          FROM #base_mix bm
+          LEFT JOIN #base_externa_2 r ON bm.conca = r.conca;
+
+          UPDATE bm
+          SET bm.aparece_base_externa_3 =
+          CASE WHEN
+            r.conca IS NOT NULL AND bm.tipo_roteiro = 'EXTERNA'
+            THEN 'X' ELSE '-' END
+          FROM #base_mix bm
+          LEFT JOIN #base_externa_3 r ON bm.conca = r.conca;
+
+          -- Atualiza a coluna 'coleta_manual'
+          UPDATE bm
+          SET bm.coleta_manual =
+              CASE
+                  WHEN bm.produto_novo = 'SIM' AND bm.aparece_manual = 'X' THEN 1
+                  WHEN
+              bm.aparece_base_externa_1 = '-'
+              AND bm.aparece_base_externa_2 = '-'
+              AND bm.aparece_base_externa_3 = '-'
+              AND bm.aparece_manual = 'X'
+            THEN 1
+                  ELSE 0
+              END
+          FROM #base_mix bm;
+
+          -- Atualiza a disponibilidade dos produtos
+          UPDATE bm
+          SET bm.disponibilidade =
+          CASE WHEN
+          (bm.base_externa_1
+          + bm.base_externa_2
+          + bm.base_externa_3
+          + bm.coleta_manual) > 0
+            THEN 'OK, PRODUTO NO PDV'
+            ELSE 'RUPTURA, SEM PRODUTO' END
+          FROM #base_mix bm;
+
+          -- Atualiza a fonte do produto dependendo da base externa ou coleta manual
+          UPDATE bm
+          SET bm.fonte =
+              CASE
+                  WHEN bm.base_externa_1 = 1 THEN 'base_externa_1'
+                  WHEN bm.base_externa_2 = 1 THEN 'base_externa_2'
+                  WHEN bm.base_externa_3 = 1 THEN 'base_externa_3'
+                  WHEN bm.coleta_manual = 1 THEN 'MANUAL'
+              END
+          FROM #base_mix bm;
+
+          -- Atualiza a regra de bandeira com base na marca
+          UPDATE bm
+          SET bm.regra_bandeira =
+          CASE WHEN
+            bm.marca = 'REGRA_A'
+            THEN 'COMPARAR'
+            ELSE 'DEIXAR' END
+          FROM #base_mix bm;
+
+          -- Atualiza a regra do SKU de acordo com a primeira regra de bandeira
+          UPDATE bm
+          SET bm.regra_sku =
+          CASE WHEN
+            bm.regra_bandeira = 'COMPARAR'
+            THEN 'Ñ'
+            ELSE 'S' END
+          FROM #base_mix bm;
+
+          -- Atualiza a regra do SKU de acordo com a segunda regra de bandeira
+          UPDATE bm
+          SET bm.regra_sku =
+          CASE WHEN
+            brb.bandeira IS NOT NULL AND bm.sku LIKE '%X_INFORMACAO%'
+            THEN 'Ñ'
+            ELSE 'S' END
+          FROM #base_mix bm
+          LEFT JOIN #base_regra_bandeira brb ON brb.bandeira = bm.bandeira_pdv;
+
+
+
+          ---------- INSERÇÃO DO RESULTADO FINAL NA TABELA 'r_mix_esperado'
+          -- Insere os dados consolidados na tabela de resultado final
+          INSERT INTO r_mix_esperado (
+              ano, semana, nome_pdv, tipo_pdv, cod_barras, cod_regra_x,
+          cod_regra_ou, produto_novo, quantidade_sku, sku, cnpj,
+          data_pesquisa, conca, aparece_base_externa_1, aparece_base_externa_2,
+          aparece_base_externa_3, aparece_manual, base_externa_1,
+          base_externa_2, base_externa_3, coleta_manual,
+              disponibilidade, fonte, regra_bandeira, regra_sku, tipo_mix
+          )	
+          SELECT 
+              ano, semana, nome_pdv, tipo_pdv, cod_barras, cod_regra_x,
+          cod_regra_ou, produto_novo, quantidade_sku, sku, cnpj, data_pesquisa,
+          conca, aparece_base_externa_1, aparece_base_externa_2,
+          aparece_base_externa_3, aparece_manual, base_externa_1, base_externa_2,
+          base_externa_3, coleta_manual, disponibilidade, fonte,
+          regra_bandeira, regra_sku, tipo_mix
+          FROM #base_mix;
+
+
+          -- Limpeza das tabelas temporárias após o processamento
+          DROP TABLE #periodo, #coleta_manual, #base_externa_1, #base_externa_2,
+          #base_externa_3, #sortimento, #base_roteiro,
+          #base_regra_bandeira, #base_mix;
+
+      END;
+      GO
+          
+
+        </code></pre>
+      </div>
+
+    <div style="text-align: right; margin-top: -1.5rem; margin-bottom: 2rem;">
+      <button id="toggle-code" class="toggle-button">🔽 Expandir</button>
+    </div>    
+
+    <div class="comment-section">
+      <h3>Qual era o desafio?</h3>
+      <p>
+        Para analisar a presença de produtos nos pontos de venda, era necessário consolidar dados vindos de várias fontes — bases de fornecedores externos, coletas manuais pelos promotores e mix de produtos.
+      </p>
+      <p>
+        Antes, essa análise envolvia cruzamentos manuais complexos e demorados, que exigiam conhecimento técnico, extrações individuais e transformações em planilhas (além de uma excelente memória para lembrar todos os passos).
+        Isso tornava o processo não só moroso, mas também sujeito a falhas humanas e inconsistências entre períodos.
+      </p>
+      <p>
+        Foi nesse contexto que surgiu a necessidade de uma automação: uma forma de padronizar, consolidar e gerar automaticamente a base de mix da semana — de forma confiável, rastreável e reutilizável.
+      </p>
+    
+      <h3>O que esse código faz?</h3>
+      <p>
+        Esta procedure armazena a lógica para geração do mix esperado por loja e SKU, considerando múltiplas fontes e regras de negócio.
+      </p>
+      <p>
+        ✔️ Começa criando todas as tabelas temporárias que servirão de base para armazenar os dados extraídos das suas respectivas fontes.
+      </p>
+      <p>
+        ✔️ Alimenta essas tabelas com os dados da semana anterior, considerando critérios como: vendas registradas, respostas positivas em campo ou presença em bases transacionais.
+      </p>
+      <p>
+        ✔️ Monta a base consolidada <strong>#base_mix</strong>, cruzando PDVs, mix, SKUs e regras — enriquecendo com informações como CNPJ, marca, tipo de roteiro e bandeira da loja.
+      </p>
+      <p>
+        ✔️ Depois, preenche colunas que indicam se o produto apareceu em cada base-fonte , além de marcar qual foi a principal fonte da evidência e se o item foi encontrado ou não no PDV.
+      </p>
+      <p>
+        ✔️ Por fim, insere o resultado na tabela <strong>resultado</strong>, pronto para ser consumido por relatórios ou dashboards de análise de disponibilidade e ruptura.
+      </p>
+      <h3>Conclusão</h3>
+      <p>
+        Este processo em SQL transforma um cruzamento complexo e manual em um fluxo automatizado, confiável e replicável. Criando uma base completa (e histórica) do mix efetivamente executado em cada semana. <br>
+        Ele permite entender com precisão quais produtos deveriam estar nas lojas, quais estavam de fato, e de onde veio a informação. <br>
+        Em resumo: menos tempo gasto com extrações e planilhas — mais foco na análise e na tomada de decisão.
+      </p>
+    </div>    
+    
+    
+
+    <a href="../index.html#portfolio" class="back-button">← Voltar ao Portfólio</a>
+
+    <div style="height: 10rem;"></div>
+    
+  </div>
+
+  <!-- Prism.js scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-sql.min.js"></script>
+
+  <script>
+    const botao = document.getElementById("toggle-code");
+    const terminal = document.getElementById("codigo-terminal");
+    let expandido = false;
+  
+    botao.addEventListener("click", () => {
+      expandido = !expandido;
+  
+      if (expandido) {
+        terminal.style.maxHeight = "1000px"; // ou 'none'
+        botao.textContent = "🔼 Recolher";
+      } else {
+        terminal.style.maxHeight = "300px";
+        botao.textContent = "🔽 Expandir";
+      }
+    });
+  </script>
+  
+
+</body>

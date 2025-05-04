@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel Gerencial - Gabriel Rocha</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/vendor.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+
+  <style>
+    body {
+      background: #111;
+    }
+
+    .project-page {
+      max-width: 1000px;
+      margin: 10rem auto;
+      padding: 0 2rem;
+      color: #fff;
+    }
+
+    .project-page h1 {
+      font-size: 3.2rem;
+      color: #39b54a;
+      margin-bottom: 2rem;
+    }
+
+    .project-page p {
+      font-size: 1.8rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .terminal {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      padding: 2rem;
+    }
+
+    .terminal::before {
+      content: "powerbi";
+      display: block;
+      color: #39b54a;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+
+    .powerbi-embed {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .comment-section {
+      margin-top: 3rem;
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 2rem;
+      border-left: 3px solid #39b54a;
+      border-radius: 6px;
+    }
+
+    .comment-section h3 {
+      color: #39b54a;
+      margin-bottom: 1rem;
+    }
+
+    .comment-section p, .comment-section ul {
+      color: #ccc;
+      font-size: 1.6rem;
+      line-height: 1.6;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 3rem;
+      font-size: 1.6rem;
+      color: #39b54a;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border 0.3s;
+    }
+
+    .back-button:hover {
+      border-bottom: 1px solid #39b54a;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="project-page">
+  <h1>Painel Gerencial</h1>
+
+  <p>
+    Um dashboard executivo projetado para facilitar a leitura rápida dos principais dados de operação,
+    reunindo em uma única página os indicadores mais estratégicos do negócio.<br>
+    Com layout objetivo e filtros inteligentes, o painel destaca variações críticas em indicadores como
+    cobertura, share, ruptura, preço e ponto extra — ajudando a gestão a focar no que realmente importa: onde estão os problemas e onde estão as oportunidades.
+  </p>
+
+  <div class="terminal">
+    <iframe 
+      class="powerbi-embed"
+      title="Painel Gerencial"
+      src="https://app.powerbi.com/view?r=eyJrIjoiYTZlMzk5ZmEtZjY4NC00ZGYxLTgwN2QtMGQ5NDgwZmQwNDNhIiwidCI6IjVhMTk4N2VhLTQxY2EtNGZmNi05OGEzLTA4ZWVkMmZiZTk1YSJ9"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <div class="comment-section">
+    <h3>Qual era o desafio?</h3>
+    <p>
+      Para apoiar a gestão de forma mais estratégica, era necessário um dashboard que consolidasse, de maneira rápida e clara, a saúde do negócio.<br>
+      O gestor precisava abrir o relatório e, sem excesso de informações, identificar de imediato em quais dos seus principais KPIs existiam alertas ou oportunidades de melhoria.
+    </p>
+    
+    <h3>O que esse painel faz?</h3>
+    <p>
+    Este painel concentra os KPIs de Visita, Share, Ruptura, Preço e Ponto Extra — em uma única visualização dinâmica, prática e voltada para ação.
+    </p>
+
+    <div style="margin-left: 20px;">
+      <p style="margin-bottom: 0;">🔹 <strong>Cards</strong></p>
+      <p style="margin-top: 5px;">
+        Começando pelos cards superiores, a análise direta mostra o volume de lojas atendidas, o percentual de cobertura e o total de visitas realizadas. 
+        A evolução dos últimos três meses é destacada logo abaixo, permitindo um comparativo claro e rápido do desempenho atual.
+      </p>
+
+      <p style="margin-bottom: 0;">🔹 <strong>Share</strong></p>
+      <p style="margin-top: 5px;">
+        Esta visão revela como nossos produtos se comportam frente à concorrência no mercado, mês a mês. 
+        Além do panorama consolidado, é possível identificar o melhor e o pior mês de performance, facilitando a análise do cenário atual e tendências. 
+        O semáforo aponta de forma simples se houve melhora, estabilidade ou queda em relação ao mês anterior.
+      </p>
+
+      <p style="margin-bottom: 0;">🔹 <strong>Ruptura</strong></p>
+      <p style="margin-top: 5px;">
+        Mais do que presença, é essencial garantir disponibilidade nas lojas. 
+        Esta visão estratégica avalia o nível de ruptura — sinalizando se estamos perdendo vendas por falta de produto. 
+        Aqui também, o semáforo indica rapidamente se o cenário melhorou ou piorou comparado ao mês anterior.
+      </p>
+
+      <p style="margin-bottom: 0;">🔹 <strong>Preço</strong></p>
+      <p style="margin-top: 5px;">
+        Nesta análise, a comparação é entre o preço praticado e o preço ideal definido em estratégia. 
+        É possível visualizar não apenas a quantidade de SKUs acima ou abaixo da faixa correta, mas também o impacto consolidado da precificação. 
+        O semáforo indica se estamos dentro do esperado ou se há risco de perda de competitividade considerando
+        verde quando 60% dos preços estão dentro do range, amarelo entre 30% e 60%, e vermelho abaixo de 30%.
+      </p>
+
+      <p style="margin-bottom: 0;">🔹 <strong>Ponto Extra</strong></p>
+      <p style="margin-top: 5px;">
+        Encerrando o painel, o indicador de Ponto Extra mostra quantas lojas possuem ativações promocionais além do ponto natural de venda. 
+        É possível visualizar o percentual de lojas com PE ativo, além de um semáforo que revela de forma intuitiva se a presença de ações extras está satisfatória ou precisa ser reforçada,
+        analisando — com base no percentual de lojas com PE — o mesmo intervalo aplicado ao preço.
+      </p>
+    </div>
+    <h3>Conclusão</h3>
+      <p>
+        O One Page Gerencial transforma o excesso de dados em insights claros e diretos.<br>
+        Em uma única tela, ele orienta o gestor sobre onde focar sua atenção, destacando o indicador mais relevante a ser tratado no momento — sem a necessidade de navegar por múltiplos relatórios ou planilhas extensas.<br>
+        Essa abordagem acelera a leitura do cenário atual e fortalece a autonomia da gestão, permitindo decisões mais rápidas, precisas e estratégicas.
+      </p>
+    
+
+  </div>
+
+  <a href="../index.html#portfolio" class="back-button">← Voltar ao Portfólio</a>
+
+  <div style="height: 10rem;"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+
+</body>
+</html>

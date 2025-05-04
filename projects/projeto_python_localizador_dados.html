@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Localizador de Dados - Gabriel Rocha</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Seus estilos -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/vendor.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+
+  <style>
+    body {
+      background: #111;
+    }
+
+    .project-page {
+      max-width: 1000px;
+      margin: 10rem auto;
+      padding: 0 2rem;
+      color: #fff;
+    }
+
+    .project-page h1 {
+      font-size: 3.2rem;
+      color: #39b54a;
+      margin-bottom: 2rem;
+    }
+
+    .project-page p {
+      font-size: 1.8rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .terminal {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+      padding: 2rem;
+    }
+
+    .terminal::before {
+      content: "python";
+      display: block;
+      color: #39b54a;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+
+    .terminal code {
+      font-size: 1.6rem;
+      font-family: 'Fira Code', monospace;
+      line-height: 1.8;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 3rem;
+      font-size: 1.6rem;
+      color: #39b54a;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border 0.3s;
+    }
+
+    .back-button:hover {
+      border-bottom: 1px solid #39b54a;
+    }
+
+    .comment-section {
+      margin-top: 3rem;
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 2rem;
+      border-left: 3px solid #39b54a;
+      border-radius: 6px;
+    }
+
+    .comment-section h3 {
+      color: #39b54a;
+      margin-bottom: 1rem;
+    }
+
+    .comment-section p {
+      color: #ccc;
+      font-size: 1.6rem;
+      line-height: 1.6;
+    }
+
+    .toggle-button {
+      background-color: #1e1e1e;
+      color: #39b54a;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-size: 1.4rem;
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+    }
+
+    .toggle-button:hover {
+      background-color: #292929;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="project-page">
+    <h1>Python | Localizador de Dados</h1>
+
+    <p>
+      E se você pudesse vasculhar dezenas de arquivos em segundos e saber, com precisão, em qual deles estão os CNPJs que importam?<br>
+      Foi com essa proposta que desenvolvi este script: uma ferramenta simples, mas extremamente útil para localizar rapidamente parceiros ou pontos de venda em meio a um mar de planilhas.
+    </p>
+
+    <div class="terminal" id="codigo-terminal" style="max-height: 300px; overflow-y: auto; transition: max-height 0.3s ease;">
+      <pre><code class="language-python">
+    import pandas as pd
+    import os
+
+    # Caminho da pasta onde estão os arquivos CSV
+    pasta_base = r'C:\Caminho\Para\Arquivo\Analise'
+
+    # Lista de CNPJs que desejamos localizar
+    cnpjs_desejados = [42583236000148, 78419762000114]
+
+    # Lista para armazenar os resultados encontrados
+    resultado_cnpj = []
+
+    # Listar todos os arquivos presentes na pasta
+    arquivos = os.listdir(pasta_base)
+
+    # Percorre os arquivos e busca os CNPJs desejados
+    for nome_arquivo in arquivos:
+        caminho = os.path.join(pasta_base, nome_arquivo)
+        df = pd.read_csv(caminho, sep=';')
+
+        # Obtém os CNPJs únicos presentes no arquivo
+        cnpjs_encontrados = df['CNPJ'].unique()
+
+        # Verifica se algum dos CNPJs desejados está presente e registra o arquivo correspondente
+        for cnpj in cnpjs_encontrados:
+            if cnpj in cnpjs_desejados:
+                resultado_cnpj.append({'CNPJ': cnpj, 'Arquivo': nome_arquivo})
+
+    # Cria um DataFrame com os resultados encontrados
+    resultado_df = pd.DataFrame(resultado_cnpj)
+
+    # Remove duplicatas (caso o mesmo CNPJ apareça mais de uma vez no mesmo arquivo)
+    resultado_df = resultado_df.drop_duplicates()
+
+    # Exibe o resultado final
+    print(resultado_df)
+      </code></pre>
+    </div>
+
+    <div style="text-align: right; margin-top: -1.5rem; margin-bottom: 2rem;">
+      <button id="toggle-code" class="toggle-button">🔽 Expandir</button>
+    </div>    
+
+    <div class="comment-section">
+      <h3>Qual era o desafio?</h3>
+      <p>
+        Durante uma análise operacional, recebi dezenas de arquivos separados por unidade de negócio, contendo milhares de registros de vendas.
+        A missão? Identificar rapidamente onde estavam dois parceiros comerciais específicos, com base em seus CNPJs — espalhados entre planilhas com estruturas semelhantes, mas arquivos independentes.
+      </p>
+      <p>
+        Fazer isso manualmente significava abrir um a um, usar filtros, procurar, copiar e colar... tarefa tediosa, lenta e muito propensa a erros.
+        Foi aí que decidi automatizar.
+      </p>
+
+      <h3>O que esse código faz?</h3>
+      <p>
+        ✔️ Lê todos os arquivos de uma pasta definida
+      </p>
+      <p>
+        ✔️ Identifica quais contêm os CNPJs desejados 
+      </p>
+      <p>
+        ✔️ Armazena o nome do arquivo e o CNPJ correspondente  
+      </p>
+      <p>
+        ✔️ Remove duplicatas e exibe o resultado de forma organizada
+      </p>
+      <p>
+        De forma simples e funcional, o código permite realizar essa busca em segundos, com precisão e zero repetição manual.
+        Pode ser usado por qualquer pessoa que precise localizar parceiros, clientes, fornecedores ou pontos de venda específicos entre dezenas ou centenas de arquivos.
+      </p>
+
+      <h3>Conclusão</h3>
+      <p>
+        Esse projeto mostra que, mesmo com poucas linhas de código, é possível criar soluções reais, replicáveis e úteis no dia a dia de qualquer analista.<br>
+        Pequenas automações como essa fazem toda a diferença no ganho de tempo, qualidade da informação e escalabilidade dos processos internos.
+      </p>
+    </div>
+
+    <a href="../index.html#portfolio" class="back-button">← Voltar ao Portfólio</a>
+
+    <div style="height: 10rem;"></div>
+  </div>
+
+  <!-- Prism.js scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+
+  <script>
+    const botao = document.getElementById("toggle-code");
+    const terminal = document.getElementById("codigo-terminal");
+    let expandido = false;
+
+    botao.addEventListener("click", () => {
+      expandido = !expandido;
+
+      if (expandido) {
+        terminal.style.maxHeight = "1000px";
+        botao.textContent = "🔼 Recolher";
+      } else {
+        terminal.style.maxHeight = "300px";
+        botao.textContent = "🔽 Expandir";
+      }
+    });
+  </script>
+</body>
+</html>
