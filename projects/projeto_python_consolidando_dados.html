@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/vendor.css">
   <link rel="stylesheet" href="../css/main.css">
-
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
 
   <style>
@@ -44,7 +43,18 @@
       overflow-x: auto;
       margin-bottom: 2rem;
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-      padding: 2rem;
+      padding: 2rem; /* Adicionando padding para criar espaço ao redor do texto */
+      color: #39b54a;
+    }
+
+    .terminal pre {
+      white-space: pre-wrap; /* Quebra as linhas quando o conteúdo é muito longo */
+      word-wrap: break-word; /* Garante que o texto quebre para a linha quando necessário */
+      font-family: 'Fira Code', monospace;
+      font-size: 1.6rem;
+      line-height: 1.8;
+      margin: 0; /* Removendo margens indesejadas */
+      padding: 1rem; /* Adicionando padding no conteúdo */
     }
 
     .terminal::before {
@@ -59,6 +69,10 @@
       font-size: 1.6rem;
       font-family: 'Fira Code', monospace;
       line-height: 1.8;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      display: block;
+      padding: 1rem; /* Padding interno no código */
     }
 
     .back-button {
@@ -112,8 +126,6 @@
     .toggle-button:active {
       background-color: #1e1e1e; /* mantém cor original mesmo ao clicar */
     }
-
-
   </style>
 </head>
 <body>
@@ -126,8 +138,6 @@
       Este script em Python automatiza todo o processo: abre, extrai, padroniza e empilha os dados,
       economizando tempo e garantindo consistência para análises futuras.
     </p>
-      
-    
 
     <div class="terminal" id="codigo-terminal" style="max-height: 300px; overflow-y: auto; transition: max-height 0.3s ease;">
       <pre><code class="language-python">
@@ -135,7 +145,6 @@
     from pyxlsb import open_workbook
     import re
 
-    # Lista de arquivos .xlsb que serão processados
     arquivos = [
         r"C:\Caminho\Para\Arquivo\Memoria - W01.xlsb",
         r"C:\Caminho\Para\Arquivo\Memoria - W02.xlsb",
@@ -152,38 +161,25 @@
         r"C:\Caminho\Para\Arquivo\Memoria - W13.xlsb"
     ]
 
-    # Expressão regular para extrair a semana do nome do arquivo
     id_semana = r"- W.{2}"
-
-    # Abas do arquivo a serem processadas
     abas = ["BASE_A", "BASE_B", "BASE_C"]
-
-    # DataFrame final onde os dados serão acumulados
     df_final = pd.DataFrame()
-
-    # Controle do índice das linhas no DataFrame final
     ultimo_indice = 0
 
-    # Processando cada arquivo na lista
     for arquivo in arquivos:
-        # Extrai a semana do nome do arquivo usando a expressão regular
         id_w_result = re.search(id_semana, arquivo)
         semana = id_w_result.group(0) if id_w_result else "N/A"
         
-        # Abre o arquivo .xlsb e processa cada aba
         with open_workbook(arquivo) as arq:
             for aba in abas:
-                if aba in arq.sheets:  # Verifica se a aba existe no arquivo
-                    id_aba = arq.get_sheet(aba)  # Acessa a aba
-                    linhas = list(id_aba.rows())  # Lê todas as linhas da aba
+                if aba in arq.sheets:
+                    id_aba = arq.get_sheet(aba)
+                    linhas = list(id_aba.rows())
                     cabecalho = [cell[2] for cell in linhas[0]]
                     dados = [[cell[2] for cell in row] for row in linhas[1:]]
                     
-                    # Cria um DataFrame com os dados lidos
                     df_aba = pd.DataFrame(dados, columns=cabecalho)
-                    
-                    # Manipula os dados dependendo da aba
-                    # (muda os nomes das colunas e adiciona a coluna 'base')
+
                     if aba.lower() == 'base_a':
                         df_aba = df_aba[['LOJA', 'CODIGO', 'VALOR']]
                         df_aba.columns = ['cnpj', 'ean', 'check']
@@ -197,27 +193,18 @@
                         df_aba.columns = ['cnpj', 'ean', 'check']
                         df_aba['base'] = 'base_c'
 
-                    # Adiciona a coluna da semana e formata os valores de 'cnpj' e 'ean'
                     df_aba['semana'] = semana
-                    # Preenche o CNPJ com zeros à esquerda
                     df_aba['cnpj'] = df_aba['cnpj'].astype(str).str.zfill(14)
-                    # Preenche o EAN com zeros à esquerda
                     df_aba['ean'] = df_aba['ean'].astype(str).str.zfill(13)
                     
-                    # Atualiza o índice do DataFrame
                     df_aba.index = range(ultimo_indice, ultimo_indice + len(df_aba))
-                    ultimo_indice = df_aba.index[-1] + 1  # Ajusta o último índice
+                    ultimo_indice = df_aba.index[-1] + 1
 
-                    # Concatena os dados dessa aba ao DataFrame final
                     df_final = pd.concat([df_final, df_aba], ignore_index=True)
 
-    # Filtra o DataFrame final para manter apenas as linhas com 'check' > 0
     df_final = df_final[df_final['check'] > 0]
-
-    # Salva o DataFrame final como um arquivo CSV
     df_final.to_csv(r"C:\Caminho\Para\Salvar\resultado.csv", index=False)
 
-    # Exibe uma mensagem indicando que o arquivo foi gerado com sucesso
     print('Arquivo gerado com sucesso!')
       </code></pre>
     </div>
@@ -241,7 +228,7 @@
       <p>
         Foi nesse contexto que criei este script em Python: uma solução automatizada para transformar um processo maçante em algo ágil, preciso e confiável.
       </p>
-  
+
       <h3>O que esse código faz?</h3>
       <p>Este script automatiza toda a leitura, extração e consolidação de dados contidos em arquivos do Excel, semana a semana.</p>
       <p>
@@ -267,7 +254,7 @@
         ✔️ Todos os registros extraídos são empilhados em um único DataFrame, criando uma base consolidada com dados de todas as semanas e todas as fontes.
       </p>
       <p>
-        ✔️ Por fim, ele filtra apenas os registros com vendas reais (check > 0) e exporta os resultados para um arquivo CSV pronto para ser analisado.
+        ✔️ Por fim, ele filtra apenas os registros com vendas reais (check > 0) e exporta os resultados para um arquivo CSV
       </p>
       <h3>Conclusão</h3>
       <p>
@@ -275,13 +262,11 @@
         Além disso, ela possibilitou uma análise mais rápida e precisa, e ainda criou um caminho para reaproveitar a solução em futuras demandas. <br>
         </p>
     </div>
-    
-    
 
     <a href="/portfolio/index.html#portfolio" class="back-button">← Voltar ao Portfólio</a>
 
     <div style="height: 10rem;"></div>
-    
+
   </div>
 
   <!-- Prism.js scripts -->
@@ -292,10 +277,10 @@
     const botao = document.getElementById("toggle-code");
     const terminal = document.getElementById("codigo-terminal");
     let expandido = false;
-  
+
     botao.addEventListener("click", () => {
       expandido = !expandido;
-  
+
       if (expandido) {
         terminal.style.maxHeight = "1000px"; // ou 'none'
         botao.textContent = "🔼 Recolher";
@@ -305,7 +290,5 @@
       }
     });
   </script>
-  
-
 </body>
 </html>

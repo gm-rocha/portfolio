@@ -6,11 +6,11 @@
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Seus estilos -->
+  <!-- Seus estilos -->
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/vendor.css">
   <link rel="stylesheet" href="../css/main.css">
-  <link rel="stylesheet" href="../https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
 
   <style>
     body {
@@ -42,7 +42,19 @@
       overflow-x: auto;
       margin-bottom: 2rem;
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-      padding: 2rem;
+      padding: 2rem;  /* Adicionando padding dentro do terminal */
+      color: #39b54a;
+    }
+
+    .terminal pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Fira Code', monospace;
+      font-size: 1.6rem;
+      line-height: 1.8;
+      color: #39b54a;
+      margin: 0; /* Removendo a margem */
+      padding: 1rem;  /* Adicionando padding no pre */
     }
 
     .terminal::before {
@@ -57,6 +69,10 @@
       font-size: 1.6rem;
       font-family: 'Fira Code', monospace;
       line-height: 1.8;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      display: block;
+      padding: 1rem; /* Padding interno no código */
     }
 
     .back-button {
@@ -120,42 +136,42 @@
 
     <div class="terminal" id="codigo-terminal" style="max-height: 300px; overflow-y: auto; transition: max-height 0.3s ease;">
       <pre><code class="language-python">
-    import pandas as pd
-    import os
+      import pandas as pd
+      import os
 
-    # Caminho da pasta onde estão os arquivos CSV
-    pasta_base = r'C:\Caminho\Para\Arquivo\Analise'
+      # Caminho da pasta onde estão os arquivos CSV
+      pasta_base = r'C:\Caminho\Para\Arquivo\Analise'
 
-    # Lista de CNPJs que desejamos localizar
-    cnpjs_desejados = [42583236000148, 78419762000114]
+      # Lista de CNPJs que desejamos localizar
+      cnpjs_desejados = [42583236000148, 78419762000114]
 
-    # Lista para armazenar os resultados encontrados
-    resultado_cnpj = []
+      # Lista para armazenar os resultados encontrados
+      resultado_cnpj = []
 
-    # Listar todos os arquivos presentes na pasta
-    arquivos = os.listdir(pasta_base)
+      # Listar todos os arquivos presentes na pasta
+      arquivos = os.listdir(pasta_base)
 
-    # Percorre os arquivos e busca os CNPJs desejados
-    for nome_arquivo in arquivos:
-        caminho = os.path.join(pasta_base, nome_arquivo)
-        df = pd.read_csv(caminho, sep=';')
+      # Percorre os arquivos e busca os CNPJs desejados
+      for nome_arquivo in arquivos:
+          caminho = os.path.join(pasta_base, nome_arquivo)
+          df = pd.read_csv(caminho, sep=';')
 
-        # Obtém os CNPJs únicos presentes no arquivo
-        cnpjs_encontrados = df['CNPJ'].unique()
+          # Obtém os CNPJs únicos presentes no arquivo
+          cnpjs_encontrados = df['CNPJ'].unique()
 
-        # Verifica se algum dos CNPJs desejados está presente e registra o arquivo correspondente
-        for cnpj in cnpjs_encontrados:
-            if cnpj in cnpjs_desejados:
-                resultado_cnpj.append({'CNPJ': cnpj, 'Arquivo': nome_arquivo})
+          # Verifica se algum dos CNPJs desejados está presente e registra o arquivo correspondente
+          for cnpj in cnpjs_encontrados:
+              if cnpj in cnpjs_desejados:
+                  resultado_cnpj.append({'CNPJ': cnpj, 'Arquivo': nome_arquivo})
 
-    # Cria um DataFrame com os resultados encontrados
-    resultado_df = pd.DataFrame(resultado_cnpj)
+      # Cria um DataFrame com os resultados encontrados
+      resultado_df = pd.DataFrame(resultado_cnpj)
 
-    # Remove duplicatas (caso o mesmo CNPJ apareça mais de uma vez no mesmo arquivo)
-    resultado_df = resultado_df.drop_duplicates()
+      # Remove duplicatas (caso o mesmo CNPJ apareça mais de uma vez no mesmo arquivo)
+      resultado_df = resultado_df.drop_duplicates()
 
-    # Exibe o resultado final
-    print(resultado_df)
+      # Exibe o resultado final
+      print(resultado_df)
       </code></pre>
     </div>
 
